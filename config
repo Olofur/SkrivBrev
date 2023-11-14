@@ -1,0 +1,40 @@
+################################################################################
+##-##-##..............,....+...!..¤|''''''''|¤..!...+....,..............##-##-##
+##-##-##..............{_.~*^*~.&*^%| config |%^*&.~*^*~._}..............##-##-##
+##-##-##..............~'^-....<'."?|,,,,,,,,|?".'>....-^'~..............##-##-##
+################################################################################
+# config file with all path names and variables relevant for the directory
+#
+# author:oh
+
+# filepath for main .pdf output. outpath variables contain outpaths for 
+# all different cases specified in the LaTeXcompile.sh file and 
+# corresponding to the different spec variables
+
+# path for regular output
+outpath=Output/PDF
+
+# path for auxillary files
+auxpath=Output/AUX
+
+# alternative paths for output files
+### These should be moved to one list instead
+specpath1=Output/PDF
+specpath2=Output/PDF
+
+altoutpath={}
+
+# conditions for alternative output
+spec1=CV
+spec2=Cover
+
+altoutcond={}
+
+# paths for copy files 
+copypath=Output/COPY
+
+# contitions for copying output
+copycond=Cover
+
+# variable file name
+variablepath=variables.dat

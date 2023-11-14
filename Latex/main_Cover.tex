@@ -21,7 +21,7 @@
 
 % Figures
 \usepackage{graphicx}
-\graphicspath{ {./Latex/Figures/} }
+\graphicspath{ {./Latex/Figures} }
 
 % Colors
 \usepackage{color}
@@ -134,15 +134,15 @@
         #4, #5
         \end{minipage}}
 
-\newcommand{\makebody}
+\newcommand{\makebody}[1]
         {\vspace{7mm}\color{black}
 
         \begin{minipage}{\textwidth}
-        \input{/CoverBody.tex}
+        \input{#1}
         \end{minipage}
         }
         
-\newcommand{\makesignature}[1]
+\newcommand{\makesignature}[2]
         {\vspace{10mm}\hspace{.7\textwidth}
         \begin{minipage}{.3\textwidth}
         Sincerely,
@@ -150,7 +150,7 @@
         \newlength{\sigwidth}\setlength{\sigwidth}{50mm}
         \newlength{\sigheight}\setlength{\sigheight}{20mm}
         
-        \includegraphics[width=\sigwidth, height=\sigheight]{signature.png}
+        \includegraphics[width=\sigwidth, height=\sigheight]{#2}
 
         \vspace{-.5\sigheight}
         \rule{\textwidth}{.25pt}
@@ -165,7 +165,7 @@
 \def\myname{\var{myname}}
 \def\phone{\var{myphone}}
 \def\email{\var{mymail}}
-\def\linkedin{\var{mywebsite}}
+\def\website{\var{mywebsite}}
 \def\myadress{\var{myadress}}
 \def\mycity{\var{mycity}}
 \def\mycountry{\var{mycountry}}
@@ -177,6 +177,10 @@
 \def\urcity{\var{urcity}}
 \def\urcountry{\var{urcountry}}
 
+% Paths
+\def\body{coverbody.tex}
+\def\signature{signature.png}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
@@ -184,16 +188,16 @@
 \makeheading{\myname}
 
 %% ======================================= CONTACT
-\makecontact{\myname}{\phone}{\email}{\linkedin}{\myadress}{\mycity}{\mycountry}
+\makecontact{\myname}{\phone}{\email}{\website}{\myadress}{\mycity}{\mycountry}
 
 %% ======================================= RECIPIENT
 \makerecipient{\urname}{\ursurname}{\urcompany}{\urcity}{\urcountry}
 
 %% ======================================= BODY
-\makebody
+\makebody{\body}
 
 %% ======================================= SIGNATURE
-\makesignature{\myname}
+\makesignature{\myname}{\signature}
 
 \end{document}
 

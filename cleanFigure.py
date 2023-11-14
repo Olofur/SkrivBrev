@@ -3,13 +3,14 @@
 ##-##-##..........{_.~*^*~.&*^%| cleanFigure.py |%^*&.~*^*~._}..........##-##-##
 ##-##-##..........~'^-....<'."?|,,,,,,,,,,,,,,,,|?".'>....-^'~..........##-##-##
 ################################################################################
-# your
-# text
-# here
+# Takes a .pdf file and makes white and sufficiently near-white pixels values 
+# transparent. The program then returns the cleaned image in the .png format.
+#
+# It is convenient to combine with a scanning software, for example through
+# google drive, to get written text that can easily be inserted into latex 
+# documents with minimal graphical artifacts.
 #
 # author:oh
-
-# Takes a scanned .pdf file (for example from Google Drive scanning) and makes white and near-white pixels values transparent.# The program then returns the cleaned image in the .png format.
 
 from pdf2image import convert_from_path
 

@@ -3,58 +3,53 @@
 ##-##-##.........{_.~*^*~.&*^%| LaTeXcompile.sh |%^*&.~*^*~._}..........##-##-##
 ##-##-##.........~'^-....<'."?|,,,,,,,,,,,,,,,,,|?".'>....-^'~..........##-##-##
 ################################################################################
+# (L)atex (C)ompiling program
 # Compiles a given .tex file into .pdf format while allowing concurrent 
-# editing. Sends outputs to different predetermined directories.
+# editing. Sends outputs to different directories determined through the 
+# config file.
 #
 # author:oh
 
 #!/bin/bash
 
-. "./Config/pathconfig.txt"
+# Import bash functions
+source application.sh 
 
-# Rework so filepath can add Latex/ when necessary
+# Read config variables
+. "./config"
+
+# Rework so filepath can add Latex/ pathlet when necessary
 filename=$1
 name=${filename%.*}
 namespec=${name#*_}
 
 filepath="Latex/$filename"
+#///
 
-# Rework to accomodate all special cases given in pathconfig
+# Rework to accomodate all special cases given as specpath in config
 case $namespec in 
 	$spec1) 
-	opath=$outpath1
+	outpath=$specpath1
 	;;
 	$spec2)
-	opath=$outpath2
-	;;
-	*) 
-	opath=$outpath1
+	outpath=$specpath2
 	;;
 esac
-apath=$auxpath
-conpath=$configpath
 
-latexmk -pvc -view=pdf -pdf -silent -outdir=$opath $filepath	
+latexmk -pvc -view=pdf -pdf -silent -outdir=$outpath $filepath	
 
-mv -t $apath "$opath/$name.log" "$opath/$name.fls" "$opath/$name.aux" "$opath/$name.fdb_latexmk"
+mv -t $auxpath "$outpath/$name.log" "$outpath/$name.fls" "$outpath/$name.aux" "$outpath/$name.fdb_latexmk"
 
-if [ -f "$opath/$name.out" ] ; then
-	mv -t $apath "$opath/$name.out"
+if [ -f "$outpath/$name.out" ] ; then
+	mv -t $auxpath "$outpath/$name.out"
 fi
 
+# Picks out two variables from varconfig.dat to name the copy
 if [ $namespec = $spec2 ] ; then
-	cpath=$copypath
-	while IFS= read -r line ; do
-		var=${line%=*}
-		val=${line#*=}
-		if [ $var = "urname" ] ; then
-			urname=$(echo $val | sed -Er "s/ /_/")
-		elif [ $var = "ursurname" ] ; then
-			ursurname=$(echo $val | sed -Er "s/ /_/")
-		fi
-	done < "$conpath/varconfig.dat"
-	
+	urname=$(getseparatedvalue "$variablepath" "=" "urname")
+	ursurname=$(getseparatedvalue "$variablepath" "=" "ursurname")
+
 	copyname=$urname'_'$ursurname'_copy'
-	cp "$opath/$name.pdf" $cpath
-	mv "$cpath/$name.pdf" "$cpath/$copyname.pdf"	
+	cp "$outpath/$name.pdf" $copypath
+	mv "$copypath/$name.pdf" "$copypath/$copyname.pdf"	
 fi
