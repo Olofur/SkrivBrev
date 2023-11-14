@@ -1,0 +1,199 @@
+%                                                                    author:oh %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[10pt]{article}
+
+% Lorem ipsum
+\usepackage{blindtext}
+
+% Paper format
+\usepackage[paper=a4paper,
+            hoffset=0mm,            % Offset from left edge
+            marginparwidth=10mm,    % Length of section titles
+            marginparsep=0mm,       % Space between titles and text
+            margin=10mm,            % Margins
+            includemp]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Fonts
+\usepackage{bookman}
+
+% Figures
+\usepackage{graphicx}
+\graphicspath{ {./Latex/Figures/} }
+
+% Colors
+\usepackage{color}
+\usepackage{xcolor}
+
+\definecolor{olofblue}{rgb}{0.486,0.647,0.8}
+\definecolor{olofwhite}{rgb}{0.95,1,0.9}
+\definecolor{olofgray}{rgb}{0.3,0.3,0.3}
+
+% Date format
+\usepackage{datetime}
+\renewcommand{\dateseparator}{--}
+
+% Arithmetic 
+\usepackage{calc}
+
+% Read data
+\usepackage{readarray}
+
+% Tables
+\usepackage{tabularx}
+
+% Page head, foot & numbering 
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[R]{\vspace{-10mm}Page \thepage \hspace{1pt} of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+% Hyperlinks
+\usepackage[unicode]{hyperref}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=black,urlcolor=olofblue,
+            anchorcolor=olofblue,citecolor=olofblue}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set filepath for input
+\makeatletter
+\def\input@path{{./Latex}}
+\makeatother
+
+% Reading information variables from .dat file
+\newcommand\var[1]{\csname DATA#1\endcsname}
+\readarraysepchar{=}
+\readdef{./Config/varconfig.dat}{\data}
+\readarray\data\MyDat[-,2]
+
+\newcounter{datacount}
+\setcounter{datacount}{0}%
+\whiledo{\value{datacount} < \MyDatROWS}{%
+  \stepcounter{datacount}%
+  \expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
+    \MyDat[\arabic{datacount},2]}%
+}
+
+\newcommand{\makeheading}[1]%
+        {\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}%
+        \begin{minipage}[t]{\textwidth}%
+                {\fontsize{26}{0}\fontfamily{qbk}\selectfont #1}%
+        \end{minipage}}
+
+\newbox\contactbox
+\newbox\mugshotbox
+\newcommand{\makecontact}[8]%
+	{\sbox\contactbox{
+	\begin{minipage}[c]{.75\linewidth}
+		\vspace{2mm}
+		\fontsize{12}{0}\raggedright\textsc{Contact Information}
+		\newlength{\rcollength}\setlength{\rcollength}{70mm}
+	
+		\vspace{2mm}
+		\begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
+		#5, & \texttt{Phone}: \href{tel:#2}{#2}\\
+		#6, & \texttt{E-mail}: \href{mailto:#3}{#3}\\
+		#7  & \texttt{Website}: \href{#4}{#1}
+		\end{tabular}
+		\vspace{1mm}
+	\end{minipage}}
+	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}
+	
+	\sbox\mugshotbox{
+	\begin{minipage}[c]{\contactheight}
+		\includegraphics[width=\linewidth, height=\contactheight]{mugshot.png}
+	\end{minipage}}
+	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}
+		
+	\begin{minipage}{\linewidth}	
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
+
+		\usebox\contactbox
+		\begin{minipage}{.25\linewidth - \contactheight}
+			\hfill
+		\end{minipage}
+	
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
+	\end{minipage}}
+
+\newcommand{\makerecipient}[5]%
+        {\vspace{3mm}
+        
+        \hspace{5mm}%
+        \color{olofgray}
+        \today\\
+
+        \hspace{5mm}%
+        \begin{minipage}{80mm}
+        Att. #1 #2, \\
+        #3, \\
+        #4, #5
+        \end{minipage}}
+
+\newcommand{\makebody}
+        {\vspace{7mm}\color{black}
+
+        \begin{minipage}{\textwidth}
+        \input{/CoverBody.tex}
+        \end{minipage}
+        }
+        
+\newcommand{\makesignature}[1]
+        {\vspace{10mm}\hspace{.7\textwidth}
+        \begin{minipage}{.3\textwidth}
+        Sincerely,
+        
+        \newlength{\sigwidth}\setlength{\sigwidth}{50mm}
+        \newlength{\sigheight}\setlength{\sigheight}{20mm}
+        
+        \includegraphics[width=\sigwidth, height=\sigheight]{signature.png}
+
+        \vspace{-.5\sigheight}
+        \rule{\textwidth}{.25pt}
+
+        \vspace{3mm}
+        #1
+        \end{minipage}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Semi-Permanent
+
+\def\myname{\var{myname}}
+\def\phone{\var{myphone}}
+\def\email{\var{mymail}}
+\def\linkedin{\var{mywebsite}}
+\def\myadress{\var{myadress}}
+\def\mycity{\var{mycity}}
+\def\mycountry{\var{mycountry}}
+
+% Job Specific
+\def\urname{\var{urname}}
+\def\ursurname{\var{ursurname}}
+\def\urcompany{\var{urcompany}}
+\def\urcity{\var{urcity}}
+\def\urcountry{\var{urcountry}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%% ======================================= HEAD
+\makeheading{\myname}
+
+%% ======================================= CONTACT
+\makecontact{\myname}{\phone}{\email}{\linkedin}{\myadress}{\mycity}{\mycountry}
+
+%% ======================================= RECIPIENT
+\makerecipient{\urname}{\ursurname}{\urcompany}{\urcity}{\urcountry}
+
+%% ======================================= BODY
+\makebody
+
+%% ======================================= SIGNATURE
+\makesignature{\myname}
+
+\end{document}
+
