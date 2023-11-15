@@ -23,7 +23,7 @@ filename=$1
 name=${filename%.*}
 namespec=${name#*_}
 
-filepath="Latex/$filename"
+filepath="~/$filename"
 #///
 
 # Rework to accomodate all special cases given as specpath in config

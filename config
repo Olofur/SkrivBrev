@@ -15,7 +15,8 @@
 outpath=Output/PDF
 
 # path for auxillary files
-auxpath=Output/AUX
+#auxpath=Output/AUX
+auxpath=/dev/null
 
 # alternative paths for output files
 ### These should be moved to one list instead
