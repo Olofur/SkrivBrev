@@ -23,7 +23,7 @@ filename=$1
 name=${filename%.*}
 namespec=${name#*_}
 
-filepath="~/$filename"
+filepath="Latex/$filename"
 #///
 
 # Rework to accomodate all special cases given as specpath in config
@@ -50,6 +50,6 @@ if [ $namespec = $spec2 ] ; then
 	ursurname=$(getseparatedvalue "$variablepath" "=" "ursurname")
 
 	copyname=$urname'_'$ursurname'_copy'
-	cp "$outpath/$name.pdf" $copypath
+	cp "$outpath/$name.pdf" "$copypath/$name.pdf"
 	mv "$copypath/$name.pdf" "$copypath/$copyname.pdf"	
 fi

@@ -15,8 +15,7 @@
 outpath=Output/PDF
 
 # path for auxillary files
-#auxpath=Output/AUX
-auxpath=/dev/null
+auxpath=Output/AUX
 
 # alternative paths for output files
 ### These should be moved to one list instead
@@ -36,6 +35,9 @@ copypath=Output/COPY
 
 # contitions for copying output
 copycond=Cover
+
+# path to latex sections
+sectionpath=Latex/Sections
 
 # variable file name
 variablepath=variables.dat

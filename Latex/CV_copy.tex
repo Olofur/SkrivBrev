@@ -1,5 +1,5 @@
 %                                                                    author:oh %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[10pt]{article}
 
 % Lorem ipsum
@@ -75,12 +75,20 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
         anchorcolor=olofblue,citecolor=olofblue}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set filepath for input
+\makeatletter
+\def\input@path{{./Latex/Sections}}
+\makeatother
+
 % Custom symbol commands
 \newrobustcmd*{\square}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) 
 	rectangle (2mm,2mm);}}
 
 \newrobustcmd*{\filledsquare}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) 
 	rectangle (2mm,2mm);}}
+
+\newrobustcmd*{\circle}[1]{\tikz{\filldraw[draw=#1, f, fill=white] (0,0) circle (.5mm)
+	node[anchor=center];}}
 
 \newrobustcmd*{\filledcircle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) circle (.5mm)
 	node[anchor=center];}}
@@ -90,22 +98,22 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 % Grading skills on a scale using custom symbols
 \newcommand{\grade}[2]{%
-	\newcounter{grading}
-	\setcounter{grading}{1}
-	\whiledo{\value{grading} < #2}{%
-		\stepcounter{grading}
+	\newcounter{x}\setcounter{x}{0}	
+	\whiledo{\value{x} < #1}{%
+		\stepcounter{x}
+		\filledsquare{olofblue}
+		}%
+	\newcounter{y}\setcounter{y}{#1}%	
+	\whiledo{\value{y} < #2}{%
+		\stepcounter{y}
+		\square{olofblue}
 		}
-}
-
-% FOR EXAMPLE \grade{3}{6} should give a grade 3/6 of squares such that
-% FS FS FS S S S
-%
-%
+	}
 
 % Reading information variables from separate file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
-\readdef{./Config/varconfig.dat}{\data}
+\readdef{./variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
 \newcounter{datacount}%
@@ -114,14 +122,15 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 	\stepcounter{datacount}%
 	\expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
 		\MyDat[\arabic{datacount},2]}%
-}
+	}
 
 % Head section
 \newcommand{\makeheading}[1]%
 	{\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}%
 	\begin{minipage}[t]{\textwidth}%
 		{\fontsize{26}{0}\fontfamily{qbk}\selectfont #1}%
-	\end{minipage}}
+	\end{minipage}
+	}
 
 % Contact section
 \newbox\contactbox
@@ -162,13 +171,14 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 	\end{minipage}
 	\begin{minipage}[c]{\mugshotwidth}
 		\includegraphics[width=.97\linewidth, height=.97\contactheight]{mugshot.png}
-	\end{minipage}}
+	\end{minipage}
+	}
 
 % Standard section - This would optimally be an enviromnent but I could not
 %			get that to work.
 \newcounter{sectioncounter}
-\setcounter{sectioncounter}{0}
-\newcommand{\makesection}[2]%
+\setcounter{sectioncounter}{1}
+\newcommand{\makesection}[1]%
 	{\pagebreak[2]\vspace{1mm}%
 
 	\begin{minipage}{\linewidth}
@@ -185,21 +195,53 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 		watermark graphics=wordcloud\thesectioncounter.png,
 		watermark overzoom=1.5,
 		watermark opacity=0.1, 
-		width=\linewidth,             % Width of entire colorbox
-		right=0mm,                    % Space between textbox and 
-%right edge
-		left=0mm,                     % Space between textbox and 
-%left edge
-		top=0mm                       % Space between textbox and 
-%top edge
+		width=\linewidth,      % Width of entire colorbox
+		right=0mm,             % Space between textbox and right edge
+		left=0mm,              % Space between textbox and left edge
+		top=0mm                % Space between textbox and top edge
 		]
-	\addtocounter{sectioncounter}{1}
-	%
 	\fontsize{11}{0}\raggedright\scshape #1
 	\tcblower
-	#2
+	\input{cvsection\thesectioncounter.tex}
 	\end{tcolorbox}
-	\end{minipage}}
+	\addtocounter{sectioncounter}{1}
+	\end{minipage}
+	}
+
+\newcounter{sectioncounter}
+\setcounter{sectioncounter}{1}
+\newcommand{\maketlsection}[1]%
+	{\pagebreak[2]\vspace{1mm}%
+
+	\begin{minipage}{.88\linewidth}
+	\begin{tcolorbox}[bicolor,            % Colorbox with two colors 
+		sidebyside,		      % Two colorboxes side by side
+		sidebyside gap=3mm,	      % Gap between colorboxes
+		sidebyside align=top,         % Text alignment for both boxes
+		lefthand width=.1363\linewidth, % Width of left colorbox
+		colback=olofblue,	      % Color background of first box
+		colbacklower=white,           % Color background of second box
+		colframe=white,               % Frame color
+		colupper=olofwhite,           % Text color of first box
+		sharp corners, 		      % Sharp box corners
+		watermark graphics=wordcloud\thesectioncounter.png,
+		watermark overzoom=1.5,
+		watermark opacity=0.1, 
+		width=\linewidth,      % Width of entire colorbox
+		right=0mm,             % Space between textbox and right edge
+		left=0mm,              % Space between textbox and left edge
+		top=0mm                % Space between textbox and top edge
+		]
+	\fontsize{11}{0}\raggedright\scshape #1
+	\tcblower
+	\input{cvsection\thesectioncounter.tex}
+	\end{tcolorbox}
+	\addtocounter{sectioncounter}{1}
+	\end{minipage}
+	\begin{minipage}{.1\linewidth}
+		kuk
+	\end{minipage}
+	}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Semi-Permanent
@@ -212,7 +254,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \def\mycity{\var{mycity}}
 \def\mycountry{\var{mycountry}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
 %% ======================================= HEAD
@@ -222,90 +264,22 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \makecontact{\myname}{\phone}{\email}{\linkedin}{\myadress}{\mycity}{\mycountry}
 
 %% ======================================= ABOUT ME
-\makesection{About Me}{\shortlorem}
+\makesection{About Me}
 
 %% ======================================= WORK EXPERIENCE
-\makesection{Work Experience}{%
-	{\fontsize{11}{10}\textsc{SmallCorp}}
-	\hfill 20XX-20XX
+\maketlsection{Work Experience}
 
-		{\small I worked X years at SmallCorp in a consultancy role to the assistant supervisor. During these years I learned of the value hard work can have on ur profit margins. I also got learned alot about the best way to get your way.}\\
-	
-	{\fontsize{11}{10}\textsc{CityCorp}}
-	\hfill 20XX-20XX
-
-		{\small For X years I worked with pushing pencils at my local CityCorp office. Here I learned such important skills as the optimal coffee temperature and why you should never have onion with mayonaise. I also learned significantly about what is going on.}}
-    
 %% ======================================= EDUCATION
-\makesection{Education}{%
-	{\fontsize{11}{10}\textsc{Practical U}}
-	\hfill 20XX-20XX
-        \begin{itemize}[leftmargin=5mm, itemsep=2mm, parsep=0mm]
-        	\item[\filledcircle{olofblue}] Certificate of Approval in Microwave Management
-	\end{itemize}
-
-	{\fontsize{11}{10}\textsc{Big U}}
-	\hfill 20XX-20XX
-        \begin{itemize}[leftmargin=5mm, itemsep=2mm, parsep=0mm]
-        	\item[\filledcircle{olofblue}] {\textit{PhD}} in Philosophy
-        	\begin{itemize}
-			\item[] Thesis: \textit{What is going on?}
-       		\end{itemize}
-	\end{itemize}
-	
-	{\fontsize{11}{10}\textsc{City U}}
-	\hfill 20XX-20XX
-        \begin{itemize}[leftmargin=5mm, itemsep=2mm, parsep=0mm]
-        	\item[\filledcircle{olofblue}] {\textit{MSc}} in Waste Management
-        	\begin{itemize}
-			\item[] Thesis: \textit{Causes and effects of contracyclical waste gathering on \\asymmetrical behavioural dependencies in rats.}
-       		\end{itemize}
-	\end{itemize}}
+\maketlsection{Education}
 
 %% ======================================= SOFTWARE SKILLS
-\makesection{Software Skills}{% 
-	\begin{itemize}[leftmargin=5mm, itemsep=2mm, parsep=0mm]
-		\item[\lline{olofblue}] {\fontsize{11}{0}\textsc{Computer}}
-			
-			{\small Excellent computer skills. Unparallelled even.} 
-    
-
-        	\item[\lline{olofblue}] {\fontsize{11}{0}\textsc{Xbox}}
-
-			{\small I have played on the xbox platform for about 14 years and is thus very experienced with using an xbox.} 
-
-	\end{itemize}}
+\makesection{Software Skills}
 
 %% ======================================= PRACTICAL SKILLS
-\makesection{Practical Skills}{%
-	\begin{itemize}[leftmargin=5mm, itemsep=2mm, parsep=0mm]
-        	\item[\lline{olofblue}] {\fontsize{11}{0}\textsc{Microwave}}
-
-			{\small I know how to operate most microwaves and have even obtained a certificate in microwave management at Practical U.} 
-            
-        	\item[\lline{olofblue}] {\fontsize{11}{0}\textsc{Tie Shoe}}
-
-			{\small Personal record at 3.42 seconds and I know 17 different shoe tie knots.}
-
-	\end{itemize}}
+\makesection{Practical Skills}
 
 %% ======================================= OTHER SKILLS
-\makesection{Other Skills}{%
-{\fontsize{12}{10}\textsc{Languages}} 
-
-\vspace{3mm}
-\begin{minipage}{\linewidth}
-\begin{tabularx}{\linewidth}{ >{\raggedright}X >{\raggedright}X }
-        \worldflag[width=3mm]{PL} \fontsize{11}{10}\textsc{Polish} &
-	\worldflag[width=3mm]{KR} \fontsize{11}{10}\textsc{Korean} & 
-	\filledsquare{olofblue} \filledsquare{olofblue} \filledsquare{olofblue}
-	\filledsquare{olofblue} \filledsquare{olofblue} \filledsquare{olofblue} &
-	\filledsquare{olofblue} \filledsquare{olofblue} \filledsquare{olofblue}
-	\square{olofblue} \square{olofblue} \square{olofblue} &
-	\grade{6}{6} &
-	\grade{3}{6}
-\end{tabularx}
-\end{minipage}}
+\makesection{Other Skills}
 
 \end{document}
 

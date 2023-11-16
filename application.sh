@@ -3,30 +3,34 @@
 ##-##-##..........{_.~*^*~.&*^%| application.sh |%^*&.~*^*~._}..........##-##-##
 ##-##-##..........~'^-....<'."?|,,,,,,,,,,,,,,,,|?".'>....-^'~..........##-##-##
 ################################################################################
-#
+# Collection of bash functions used by main program.
 #
 # author:oh
  
 #!/bin/bash
+
+. "./config"
 
 # Usage:
 # $1 file path to search in
 # $2 separator character
 # $3 variable name to look for in file
 
-ARGCOUNT=3    # Expected number of parameters
-
-FILE_ERR=100  # The given file does not exist
-PARAM_ERR=101 # Incorrect number of parameters given
-VAR_ERR=102   # The variable was not found in the file
+# Looks for value match in variable file with variable name given
 
 function getseparatedvalue () {
-	if [ $# -lt 3 ] ; then
-		printf "Expected 3 arguments, got $#."
+	ARGCOUNT=3    # Expected number of parameters
+
+	FILE_ERR=100  # The given file does not exist
+	PARAM_ERR=101 # Incorrect number of parameters given
+	VAR_ERR=102   # The variable was not found in the file
+
+	if [ $# -lt $ARGCOUNT ] ; then
+		printf "Expected $ARGCOUNT arguments, got $#.\n"
 		return $PARAM_ERR
 	fi
 	if [ ! -f $1 ] ; then
-		printf "The given file can not be found."
+		printf "The given file can not be found.\n"
 		return $FILE_ERR
 	fi
 	
@@ -43,10 +47,36 @@ function getseparatedvalue () {
 	done < $1
 	
 	if [ -z $match ] ; then
-		printf "The given variable could not be found."
+		printf "The given variable could not be found.\n"
 		return $VAR_ERR
 	else
 		echo $match
 	fi 
 }
+
+# Usage:
+# $1 directory path to search in 
+# $2 pattern to search for
+
+# Finds number of files that matches pattern in given directory
+
+function getsections () {
+	ARGCOUNT=2
+
+	if [ $# -lt $ARGCOUNT ] ; then
+		printf "Expected $ARGCOUNT arguments, got $#.\n"
+		return $PARAM_ERR
+	fi
+	if [ ! -d $1 ] ; then
+		printf "The given directory can not be found.\n"
+		return $FILE_ERR
+	fi
+	
+	return $(ls -1 $1 | grep -E "$2" | wc -l)
+}
+
+
+
+
+
 
