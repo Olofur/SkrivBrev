@@ -58,6 +58,9 @@
             linkcolor=black,urlcolor=olofblue,
             anchorcolor=olofblue,citecolor=olofblue}
 
+% QR code
+\usepackage{qrcode}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set filepath for input
 \makeatletter
@@ -67,27 +70,27 @@
 % Reading information variables from .dat file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
-\readdef{./Config/varconfig.dat}{\data}
+\readdef{./variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
-\newcounter{datacount}
-\setcounter{datacount}{0}%
+\newcounter{datacount}\setcounter{datacount}{0}%
 \whiledo{\value{datacount} < \MyDatROWS}{%
-  \stepcounter{datacount}%
-  \expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
-    \MyDat[\arabic{datacount},2]}%
-}
+	\stepcounter{datacount}
+	\expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
+		\MyDat[\arabic{datacount},2]}%
+	}
 
-\newcommand{\makeheading}[1]%
-        {\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}%
-        \begin{minipage}[t]{\textwidth}%
-                {\fontsize{26}{0}\fontfamily{qbk}\selectfont #1}%
-        \end{minipage}}
+\newcommand{\makeheading}[1]{%
+	\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}
+        \begin{minipage}[t]{\textwidth}
+                {\fontsize{26}{0}\fontfamily{qbk}\selectfont #1}
+        \end{minipage}%
+	}
 
 \newbox\contactbox
 \newbox\mugshotbox
-\newcommand{\makecontact}[8]%
-	{\sbox\contactbox{
+\newcommand{\makecontact}[8]{%
+	\sbox\contactbox{%
 	\begin{minipage}[c]{.75\linewidth}
 		\vspace{2mm}
 		\fontsize{12}{0}\raggedright\textsc{Contact Information}
@@ -95,33 +98,43 @@
 	
 		\vspace{2mm}
 		\begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
-		#5, & \texttt{Phone}: \href{tel:#2}{#2}\\
-		#6, & \texttt{E-mail}: \href{mailto:#3}{#3}\\
+		#5, & \texttt{Phone}:   \href{tel:#2}{#2}\\
+		#6, & \texttt{E-mail}:  \href{mailto:#3}{#3}\\
 		#7  & \texttt{Website}: \href{#4}{#1}
 		\end{tabular}
 		\vspace{1mm}
-	\end{minipage}}
-	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}
+	\end{minipage}%
+	}
+	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}%
 	
-	\sbox\mugshotbox{
+	\sbox\mugshotbox{%
 	\begin{minipage}[c]{\contactheight}
-		\includegraphics[width=\linewidth, height=\contactheight]{mugshot.png}
-	\end{minipage}}
-	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}
+		\includegraphics[width=\linewidth, height=\contactheight]%
+				{mugshot.png}
+	\end{minipage}%
+	}
+	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}%
 		
-	\begin{minipage}{\linewidth}	
-		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
+	\begin{minipage}{\linewidth - \mugshotwidth}	
+		{\color{olofblue}\rule{\linewidth}{.3pt}}%
 
 		\usebox\contactbox
 		\begin{minipage}{.25\linewidth - \contactheight}
 			\hfill
 		\end{minipage}
 	
-		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
-	\end{minipage}}
+		{\color{olofblue}\rule{\linewidth}{.3pt}}%
+		\vspace{1mm}%
+	\end{minipage}
+	\begin{minipage}{\mugshotwidth}
+		\vspace{-1mm}
+		\qrset{height=\mugshotwidth}
+		\qrcode{ABCD} % What to put?
+	\end{minipage}%
+	}
 
-\newcommand{\makerecipient}[5]%
-        {\vspace{3mm}
+\newcommand{\makerecipient}[5]{%
+	\vspace{3mm}
         
         \hspace{5mm}%
         \color{olofgray}
@@ -132,23 +145,25 @@
         Att. #1 #2, \\
         #3, \\
         #4, #5
-        \end{minipage}}
+	\color{black}
+        \end{minipage}%
+	}
 
-\newcommand{\makebody}[1]
-        {\vspace{7mm}\color{black}
+\newcommand{\makebody}[1]{%
+	\vspace{7mm}
 
         \begin{minipage}{\textwidth}
         \input{#1}
-        \end{minipage}
+        \end{minipage}%
         }
         
-\newcommand{\makesignature}[2]
-        {\vspace{10mm}\hspace{.7\textwidth}
+\newcommand{\makesignature}[2]{%
+	\vspace{10mm}\hspace{.7\textwidth}
         \begin{minipage}{.3\textwidth}
         Sincerely,
         
-        \newlength{\sigwidth}\setlength{\sigwidth}{50mm}
-        \newlength{\sigheight}\setlength{\sigheight}{20mm}
+        \newlength{\sigwidth}\setlength{\sigwidth}{50mm}%
+        \newlength{\sigheight}\setlength{\sigheight}{20mm}%
         
         \includegraphics[width=\sigwidth, height=\sigheight]{#2}
 
@@ -157,7 +172,8 @@
 
         \vspace{3mm}
         #1
-        \end{minipage}}
+        \end{minipage}%
+	}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Semi-Permanent

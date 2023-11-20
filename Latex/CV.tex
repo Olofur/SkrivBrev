@@ -11,12 +11,12 @@ sodales commodo, lectus velit ultrices augue, a dignissim nibhlectus placerat
 pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 %Paper format 
-\usepackage[paper=a4paper,
-	hoffset=0mm,	        % Offset from left edge 
-	marginparwidth=10mm,    % Width of margin
-        marginparsep=0mm,       % Space between margin and main body
-        margin=10mm,            % Margins
-        includemp]{geometry}
+\usepackage[paper=a4paper,         % A4 format
+	    hoffset=0mm,	   % Offset from left edge 
+	    marginparwidth=10mm,   % Width of margin
+            marginparsep=0mm,      % Space between margin and main body
+            margin=10mm,           % Margins
+            includemp]{geometry}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -47,9 +47,6 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
 
-% Plots
-\usepackage{pgfplots}
-
 % Date format
 \usepackage{datetime}
 \renewcommand{\dateseparator}{--}
@@ -77,9 +74,13 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 % Hyperlinks
 \usepackage[unicode]{hyperref}
-\hypersetup{colorlinks,breaklinks,
-	linkcolor=black,urlcolor=olofblue,
-        anchorcolor=olofblue,citecolor=olofblue}
+\hypersetup{colorlinks,           %
+	    breaklinks,           %
+	    linkcolor=black,      % Like above \pageref{LastPage}
+	    urlcolor=olofblue}    % Like \href{}{} in the contact section
+
+% QR code
+\usepackage{qrcode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set filepath for input
@@ -88,7 +89,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \makeatother
 
 % Custom symbol commands
-\newrobustcmd*{\square}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) 
+\renewrobustcmd*{\square}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) 
 	rectangle (2mm,2mm);}}
 
 \newrobustcmd*{\filledsquare}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) 
@@ -100,7 +101,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \newrobustcmd*{\filledcircle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) 
 	circle (1mm);}}
 
-\newrobustcmd*{\triangle}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) -- 
+\renewrobustcmd*{\triangle}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) -- 
 	(1mm,2mm) -- (2mm,0) -- cycle;}}
 
 \newrobustcmd*{\filledtriangle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) -- 
@@ -109,59 +110,122 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \newrobustcmd*{\lline}[1]{\tikz{\draw[draw=#1,thick] (0,0) -- (2mm,0) 
 	node[anchor=west];}}
 
-% Grading skills on a scale using custom symbols
+% COMMAND: Grading skills on a scale using custom symbols
 \newcommand{\grade}[3]{%
-	\newcounter{oddcounter}\setcounter{oddcounter}{0}
-
-	\newcounter{x}\setcounter{x}{0}	
-	\whiledo{\value{x} < #2}{%
+	% When this counter is even the symbols are flipped, 
+	% which produces a nice effect when using the triangle
+	\newcounter{oddcounter}\setcounter{oddcounter}{0}%
+	\newcounter{x}\setcounter{x}{0}%	
+	\newcounter{y}\setcounter{y}{#1}%
+	\whiledo{\value{x} < #1}{%
 		\stepcounter{x}
 		\stepcounter{oddcounter}
 		\ifodd\theoddcounter
-			\csname filled#1\endcsname{olofblue}
+			\csname filled#3\endcsname{olofblue}
 		\else
-			\rotatebox[origin=c]{180}{\csname filled#1\endcsname{olofblue}}
+			\rotatebox[origin=c]{180}{%
+				\csname filled#3\endcsname{olofblue}}
 		\fi
-		\!\!\!\!}%
-	\newcounter{y}\setcounter{y}{#2}%	
-	\whiledo{\value{y} < #3}{%
+		\!\!\!\!}% Reduce spacing slightly
+	\whiledo{\value{y} < #2}{%
 		\stepcounter{y}
 		\stepcounter{oddcounter}
 		\ifodd\theoddcounter
-			\csname #1\endcsname{olofblue}
+			\csname #3\endcsname{olofblue}
 		\else
-			\rotatebox[origin=c]{180}{\csname #1\endcsname{olofblue}}
+			\rotatebox[origin=c]{180}{%
+				\csname #3\endcsname{olofblue}}
 		\fi
-		\!\!\!\!}%
+		\!\!\!\!}% 
 	}
 
-% Reading information variables from separate file
+% COMMAND: Timeline list
+\newcounter{tlcounter}\setcounter{tlcounter}{0}%
+\DeclareRobustCommand{\dottedlinked}{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\ifnum1>\value{tlcounter}
+			\node[draw, 				 % Draw lines
+			      fill, 				 % Fill figure
+			      kite, 				 % Kite shape
+			      kite upper vertex angle=30, 	 % Kite angle
+			      anchor=south east, 		 % Anchor point
+			      inner sep=-.1mm,			 % Inner width
+			      outer sep=0mm,                     % Outer width
+			      shade, 				 % Shading
+                              olofblue,				 % General color
+			      top color=olofwhite, 		 % 
+			      middle color=olofblue, 		 % 
+			      bottom color=olofblue] 		 %
+		     	     at (0,.6mm)                         % Offset
+			     (tlcounter\number\value{tlcounter}) % Node name
+		     	     {\phantom{\textbullet}};            % Text in node
+		\fi
+		\ifnum0<\value{tlcounter}
+			\node[draw,				 % 
+			      fill,				 %
+                              circle, 				 %
+			      anchor=south east, 		 %
+                              inner sep=-.1mm, 			 %
+			      outer sep=0mm, 			 %
+                              shade, 				 %
+                              olofblue, 			 %
+			      top color=olofwhite, 		 %
+			      middle color=olofblue, 		 %
+			      bottom color=olofblue] 		 %
+		     	     at (0,.6mm)			 %
+			     (tlcounter\number\value{tlcounter}) %
+		     	     {\phantom{\textbullet}};		 %
+			\draw[olofblue,line width=.5mm] 
+			(tlcounter\number\value{tlcounter}.north) -- 
+			(tlcounter\the\numexpr\value{tlcounter}-1.base);
+    		\fi
+		\stepcounter{tlcounter}
+	\end{tikzpicture}%
+	}
+
+\newlist{timeline}{itemize}{1}%
+\setlist[timeline,1]{label={\dottedlinked},    % Make line links between items
+		     labelsep=-\linewidth,     % Put bullets on right of page
+		     leftmargin=0mm,	       % No indent on the left
+		     rightmargin=5mm,	       % Indent slightly from the right 
+		     itemsep=2mm}	       % Item separation
+
+% If you at some point want to reset the timeline counter to stop drawing
+% lines between timeline items:
+%\makeatletter
+%\g@addto@macro{\timeline}{\setcounter{tlcounter}{0}}
+%\makeatother
+
+% TO BE ADDED
+%\newenvironment\skillslist
+
+
+% COMMAND: Reading information variables from separate file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
 \readdef{./variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
-\newcounter{datacount}%
-\setcounter{datacount}{0}
+\newcounter{datacount}\setcounter{datacount}{0}%
 \whiledo{\value{datacount} < \MyDatROWS}{%
-	\stepcounter{datacount}%
+	\stepcounter{datacount}
 	\expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
 		\MyDat[\arabic{datacount},2]}%
 	}
 
-% Head section
-\newcommand{\makeheading}[1]%
-	{\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}%
-	\begin{minipage}[t]{\textwidth}%
-		{\fontsize{26}{0}\fontfamily{qbk}\selectfont #1}%
-	\end{minipage}
+% COMMAND: Head section
+\newcommand{\makeheading}[1]{%
+	\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}
+	\begin{minipage}[t]{\textwidth}
+		{\fontsize{26}{10}\fontfamily{qbk}\selectfont #1}
+	\end{minipage}%
 	}
 
-% Contact section
-\newbox\contactbox
-\newbox\mugshotbox
-\newcommand{\makecontact}[8]%
-	{\sbox\contactbox{
+% COMMAND: Contact section
+\newbox\contactbox%
+\newbox\mugshotbox%
+\newcommand{\makecontact}[8]{%
+	\sbox\contactbox{%
 	\begin{minipage}[c]{.75\linewidth}
 		\vspace{2mm}
 		\fontsize{12}{0}\raggedright\textsc{Contact Information}
@@ -169,138 +233,80 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 	
 		\vspace{2mm}
 		\begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
-		#5, & \texttt{Phone}: \href{tel:#2}{#2}\\
-		#6, & \texttt{E-mail}: \href{mailto:#3}{#3}\\
-		#7  & \texttt{LinkedIn}: \href{#4}{#1}
-		% add GitHub
+		#5, & \texttt{Phone}:    \href{tel:#2}{#2}\\
+		#6, & \texttt{E-mail}:   \href{mailto:#3}{#3}\\
+		#7  & \texttt{Website}:  \href{#4}{#1}
 		\end{tabular}
 		\vspace{1mm}
-	\end{minipage}}
-	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}
+	\end{minipage}%
+	}
+	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}%
 	
-	\sbox\mugshotbox{
+	\sbox\mugshotbox{%
 	\begin{minipage}[c]{\contactheight}
-		\includegraphics[width=\linewidth, height=\contactheight]{mugshot.png}
-	\end{minipage}}
-	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}
+		\includegraphics[width=\linewidth, height=\contactheight]%
+				{mugshot.png}
+	\end{minipage}%
+	}
+	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}%
 		
 	\begin{minipage}{\linewidth - \mugshotwidth}	
-		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
 
 		\usebox\contactbox
 		\begin{minipage}{.25\linewidth - \contactheight}
 			\hfill
 		\end{minipage}
 	
-		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
+		\vspace{1mm}%
 	\end{minipage}
 	\begin{minipage}[c]{\mugshotwidth}
-		\includegraphics[width=.97\linewidth, height=.97\contactheight]{mugshot.png}
-	\end{minipage}
+		\includegraphics[width=.97\linewidth, height=.97\contactheight]%
+				{mugshot.png}
+	\end{minipage}%
 	}
 
-% Timeline list
-\newcounter{tlcounter}\setcounter{tlcounter}{0}
-\DeclareRobustCommand{\dottedlinked}{%
-	\begin{tikzpicture}[remember picture,overlay]
-		\ifnum1>\value{tlcounter}
-			\node[draw,fill,anchor=south east,inner sep=-.1mm,outer sep=0mm,
-		      	      kite, kite upper vertex angle=30, olofblue, shade,
-			      top color=olofwhite, middle color=olofblue, 
-			      bottom color=olofblue] % Create note
-		     	     at (0,.6mm) % Node start coordinate offset
-			     (tlcounter\number\value{tlcounter}) % Node name
-		     	     {\phantom{\textbullet}}; % Text in node
-		\fi
-		\ifnum0<\value{tlcounter}
-			\node[draw,fill,anchor=south east,inner sep=-.1mm,outer sep=0mm,
-		     	      circle, olofblue, shade, 
-			      top color=olofwhite, middle color=olofblue, bottom color=olofblue] 
-		     	     at (0,.6mm)
-			     (tlcounter\number\value{tlcounter}) 
-		     	     {\phantom{\textbullet}};
-			\draw[olofblue,line width=1pt] 
-			(tlcounter\number\value{tlcounter}.north) -- 
-			(tlcounter\the\numexpr\value{tlcounter}-1.base);
-    		\fi
-		\stepcounter{tlcounter}
-	\end{tikzpicture}%
-}
+% COMMAND: Main section
+\newcounter{sectioncounter}\setcounter{sectioncounter}{1}%
+\newcommand{\makesection}[2]{%
+	\pagebreak[2]\vspace{1mm}%
 
-% If you at some point want to reset the timeline counter
-%\makeatletter
-%\g@addto@macro{\timeline}{\setcounter{tlcounter}{0}}
-%\makeatother
-\newlist{timeline}{itemize}{1}
-\setlist[timeline,1]{label={\dottedlinked}, labelsep=-\linewidth-3mm, leftmargin=0mm, 
-			    itemsep=2mm}
+	\newsavebox{\textbox}%
+	\newsavebox{\titlebox}%
 
-\newcounter{sectioncounter}
-\setcounter{sectioncounter}{1}
-\newcommand{\makesection}[2]%
-	{\pagebreak[2]\vspace{1mm}%
-	
-	\newsavebox{\textbox}
-	\newsavebox{\titlebox}
-	\newsavebox{\timelinebox}
-
-	\sbox\textbox{	
+	\sbox\textbox{%	
 	\begin{minipage}{.85\linewidth}	
 		\input{cvsection\thesectioncounter.tex}
-	\end{minipage}}
+	\end{minipage}%
+	}
 	\newlength{\textheight}\setlength{\textheight}{2.05\ht\textbox}
 
-	\sbox\titlebox{
+	\sbox\titlebox{%
 	\begin{minipage}{.14\linewidth}
-	\begin{tcolorbox}[enhanced, 
-		colback=olofblue,	      % Color background of first box
-		colframe=white,               % Frame color
-		colupper=olofwhite,           % Text color of first box
-		sharp corners, 		      % Sharp box corners
-		watermark graphics=wordcloud\thesectioncounter.png,
-		watermark overzoom=1.0,
-		watermark opacity=0.2, 
-		width=\linewidth,      % Width of entire colorbox
-		height=\textheight,
-		right=0mm,             % Space between textbox and right edge
-		left=0mm,              % Space between textbox and left edge
-		top=0mm                % Space between textbox and top edge
-		]
+	\begin{tcolorbox}[enhanced,	% Enable watermarks 
+		colback=olofblue,	% Background color
+		colframe=white,		% Frame color
+		colupper=olofwhite,	% Text color
+		sharp corners,		% Sharp box corners
+		watermark graphics=wordcloud\thesectioncounter.png,%
+		watermark overzoom=1.0,	% Watermark zoom
+		watermark opacity=0.15, % Watermark opacity
+		width=\linewidth,	% Width of colorbox
+		height=\textheight,	% Height of colorbox
+		right=0mm,		% Space between text and right edge
+		left=0mm,		% Space between text and left edge
+		top=0mm]		% Space between text and top edge
 	\fontsize{11}{0}\raggedright\scshape #1
 	\end{tcolorbox}
-	\end{minipage}}
-	
-	%\sbox\timelinebox{
-	%\begin{minipage}{.04\linewidth}
-	%\begin{tcolorbox}[enhanced, 
-	%	colback=red, % Just for the time bean so its clear
-	%	colframe=white,
-	%	sharp corners,
-	%	width=\linewidth, 
-	%	height=\textheight,
-	%	left=0mm,
-	%	top=0mm]
-%	\begin{tikzpicture}{\linewidth}[]
+	\end{minipage}%
+	}
 
-		%Nodes
-%		\node[tnode] (tenure1)                 
-%			{\filledtriangle{olofblue}};
-%		\node[tnode] (tenure2) [below=20mm] 
-%			{\filledcircle{olofblue}};
-
-		%Lines
-%		\draw[-, color=olofblue] (tenure2.center) -- (tenure1.center);
-%	\end{tikzpicture}
-	%\end{tcolorbox}
-	%\end{minipage}
-	%}
-
-	\hspace{-2mm}
 	\usebox\titlebox
-	%\usebox\timelinebox
+	\hspace{.5mm}	
 	\usebox\textbox
 	
-	\addtocounter{sectioncounter}{1}
+	\addtocounter{sectioncounter}{1}%
 	}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -308,7 +314,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \def\myname{\var{myname}}
 \def\phone{\var{myphone}}
 \def\email{\var{mymail}}
-\def\linkedin{\var{mywebsite}}
+\def\website{\var{mywebsite}}
 \def\myadress{\var{myadress}}
 \def\mycity{\var{mycity}}
 \def\mycountry{\var{mycountry}}
@@ -320,7 +326,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \makeheading{\myname}
 
 %% ======================================= CONTACT
-\makecontact{\myname}{\phone}{\email}{\linkedin}{\myadress}{\mycity}{\mycountry}
+\makecontact{\myname}{\phone}{\email}{\website}{\myadress}{\mycity}{\mycountry}
 
 %% ======================================= ABOUT ME
 \makesection{About Me}

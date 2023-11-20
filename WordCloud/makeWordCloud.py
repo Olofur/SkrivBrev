@@ -9,7 +9,8 @@
 #
 # author:oh
 
-from os import path
+import os
+import re
 from PIL import Image
 
 import numpy as np
@@ -18,27 +19,47 @@ import matplotlib.pyplot as plt
 
 from wordcloud import WordCloud
 
-FILE_PATH="wordcloud.dat"
+import random
+
+# Transfer these to separate file
+FILE_PATH="./wordcloud.dat"
+SECTION_PATH="../Latex/Sections"
 SAVE_PATH="../Latex/wordcloud.png"
 FONT_PATH="./Fonts/arial.ttf"
-COLOR_FUNC=lambda *args, **kwargs: (154,185,234)
 
-df = pd.read_table(FILE_PATH, sep=",", usecols=["Property"])
+PATTERN="cvsection"
+COLOR_FUNC=lambda *args, **kwargs: (144,195,234)
 
-for x in range(1,7):
+df = pd.read_table(FILE_PATH, sep=",", usecols=["Property:"])
+
+cnt = 1
+for x in os.listdir(SECTION_PATH):
+	# Check if x matches the pattern
+	m = re.search(PATTERN, x)
+	if m == None:	
+		continue
+
 	# All words are given the frequency 1
 	freq = {}
 	for item in df.values:
 		freq.update({item[0,]: 1})
 
+	# Shuffle dictionary to increase variation in wordclouds
+	keys = list(freq.keys())
+	random.shuffle(keys)
+
+	# Generate wordcloud
 	wordcloud = WordCloud(font_path=FONT_PATH, scale=1, min_font_size=6, 
 			      max_words=50, background_color=None, 
 			      color_func=COLOR_FUNC, mode="RGBA",
 			      repeat=True).generate_from_frequencies(freq)
 
-	SAVE_PATH="../Latex/Figures/wordcloud" + str(x) + ".png"
+	SAVE_PATH="../Latex/Figures/wordcloud" + str(cnt) + ".png"
 	wordcloud.to_file(SAVE_PATH)
+	
+	cnt += 1
 
-plt.imshow(wordcloud)
-plt.axis("off")
+# Show graphics
+#plt.imshow(wordcloud)
+#plt.axis("off")
 #plt.show()
