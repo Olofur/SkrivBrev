@@ -49,9 +49,16 @@ for x in os.listdir(SECTION_PATH):
 	random.shuffle(keys)
 
 	# Generate wordcloud
-	wordcloud = WordCloud(font_path=FONT_PATH, scale=1, min_font_size=6, 
-			      max_words=50, background_color=None, 
-			      color_func=COLOR_FUNC, mode="RGBA",
+	wordcloud = WordCloud(font_path=FONT_PATH, 
+			      width=200, 
+			      height=400, 
+			      prefer_horizontal=1.0,
+			      scale=1, 
+			      min_font_size=6, 
+			      max_words=50, 
+			      background_color=None, 
+			      color_func=COLOR_FUNC, 
+			      mode="RGBA",
 			      repeat=True).generate_from_frequencies(freq)
 
 	SAVE_PATH="../Latex/Figures/wordcloud" + str(cnt) + ".png"

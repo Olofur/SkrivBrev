@@ -23,9 +23,6 @@ filename=$1
 name=${filename%.*}
 namespec=${name#*_}
 
-filepath="Latex/$filename"
-#///
-
 # Rework to accomodate all special cases given as specpath in config
 case $namespec in 
 	$spec1) 
@@ -36,7 +33,9 @@ case $namespec in
 	;;
 esac
 
-latexmk -pvc -view=pdf -pdf -silent -outdir=$outpath $filepath	
+filepath="Latex/$filename"
+
+latexmk -pvc -view=pdf -pdf -silent -outdir=$outpath $filepath
 
 mv -t $auxpath "$outpath/$name.log" "$outpath/$name.fls" "$outpath/$name.aux" "$outpath/$name.fdb_latexmk"
 

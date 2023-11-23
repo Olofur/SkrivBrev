@@ -21,14 +21,14 @@
 
 % Figures
 \usepackage{graphicx}
-\graphicspath{ {./Latex/Figures} }
+\graphicspath{ {./Figures} }
 
 % Colors
 \usepackage{color}
 \usepackage{xcolor}
 
 \definecolor{olofblue}{rgb}{0.486,0.647,0.8}
-\definecolor{olofwhite}{rgb}{0.95,1,0.9}
+\definecolor{olofwhite}{rgb}{1.0,1,0.95}
 \definecolor{olofgray}{rgb}{0.3,0.3,0.3}
 
 % Date format
@@ -64,13 +64,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set filepath for input
 \makeatletter
-\def\input@path{{./Latex/Sections}}
+\def\input@path{{./Sections}}
 \makeatother
 
 % Reading information variables from .dat file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
-\readdef{./variables.dat}{\data}
+\readdef{./Latex/variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
 \newcounter{datacount}\setcounter{datacount}{0}%

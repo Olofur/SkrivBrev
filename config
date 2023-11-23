@@ -40,4 +40,5 @@ copycond=Cover
 sectionpath=Latex/Sections
 
 # variable file name
-variablepath=variables.dat
+variablepath=Latex/variables.dat
+

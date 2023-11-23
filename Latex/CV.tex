@@ -26,6 +26,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 % Figures
 \usepackage{graphicx}
+% Fix so the /Latex pathlet is not needed
 \graphicspath{ {./Latex/Figures} }
 
 % Colors
@@ -33,7 +34,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \usepackage{xcolor}
 
 \definecolor{olofblue}{rgb}{0.486,0.647,0.8}
-\definecolor{olofwhite}{rgb}{0.95,1,0.9}
+\definecolor{olofwhite}{rgb}{1.0,1,0.95}
 \definecolor{olofgray}{rgb}{0.3,0.3,0.3}
 
 % Graphics
@@ -62,7 +63,9 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 % Tables
 \usepackage{tabularx}
 \usepackage{paralist}
-\usepackage[shortlabels]{enumitem}
+\usepackage{enumitem}
+
+\usepackage{tasks}
 
 % Page head, foot & numbering
 \usepackage{fancyhdr}
@@ -110,6 +113,15 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 \newrobustcmd*{\lline}[1]{\tikz{\draw[draw=#1,thick] (0,0) -- (2mm,0) 
 	node[anchor=west];}}
 
+\newrobustcmd*{\angletriangle}[1]{\tikz{%
+				  \filldraw[draw=#1,		  % Draw figure
+				 	    fill=#1,		  % Fill figure
+                              		    olofblue] 		  % Border color
+				  (0,0) -- (0,2mm) -- (2mm,2mm) -- cycle;}}
+
+% COMMAND: Write title for section - made to pop out
+\newcommand{\subtitle}[1]{{\fontsize{12}{10}\fontfamily{qbk}\selectfont #1}}
+
 % COMMAND: Grading skills on a scale using custom symbols
 \newcommand{\grade}[3]{%
 	% When this counter is even the symbols are flipped, 
@@ -151,11 +163,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 			      anchor=south east, 		 % Anchor point
 			      inner sep=-.1mm,			 % Inner width
 			      outer sep=0mm,                     % Outer width
-			      shade, 				 % Shading
-                              olofblue,				 % General color
-			      top color=olofwhite, 		 % 
-			      middle color=olofblue, 		 % 
-			      bottom color=olofblue] 		 %
+                              olofblue]				 % Border color
 		     	     at (0,.6mm)                         % Offset
 			     (tlcounter\number\value{tlcounter}) % Node name
 		     	     {\phantom{\textbullet}};            % Text in node
@@ -167,11 +175,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 			      anchor=south east, 		 %
                               inner sep=-.1mm, 			 %
 			      outer sep=0mm, 			 %
-                              shade, 				 %
-                              olofblue, 			 %
-			      top color=olofwhite, 		 %
-			      middle color=olofblue, 		 %
-			      bottom color=olofblue] 		 %
+                              olofblue] 			 %
 		     	     at (0,.6mm)			 %
 			     (tlcounter\number\value{tlcounter}) %
 		     	     {\phantom{\textbullet}};		 %
@@ -196,14 +200,75 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 %\g@addto@macro{\timeline}{\setcounter{tlcounter}{0}}
 %\makeatother
 
-% TO BE ADDED
-%\newenvironment\skillslist
+% ENVIRONMENT: Listing skills
+\newenvironment{skillslist}[1]{%
+	\begin{tasks}[label=\angletriangle{olofblue},
+		      label-align=left,
+		      label-offset=-5mm,
+		      item-indent=0mm,
+		      column-sep=2mm]%
+		      (#1)%
+	}
+	{\end{tasks}%
+	}
 
+% COMMAND: Skillbox
+\newcommand{\skill}[3]{%
+	\vspace{-6.8mm}
+	\begin{tcolorbox}[colback=white,
+			  colframe=olofblue,
+			  boxrule=.5pt,
+			  bottomrule=-.5pt,
+			  leftrule=-.5pt,
+			  rightrule=-.5pt,
+			  sharp corners]% 
+	\subtitle{#1} #2 \\ {\small #3}
+	\end{tcolorbox}%
+	}
+
+% COMMAND: Mini skillbox
+\newsavebox\minibox
+\newcommand{\miniskill}[1]{%
+	\sbox\minibox{\small #1}%
+	\newlength{\minilength}\setlength{\minilength}{\wd\minibox + 3mm}%
+	\vspace{1mm}%	
+	\begin{minipage}{\minilength}
+	\begin{tcolorbox}[colback=olofblue,
+			  colframe=white,
+			  colupper=olofwhite,
+			  height=16pt,
+			  left=0mm,
+			  top=0mm,
+			  sharp corners] 
+	{\small #1}
+	\end{tcolorbox}
+	\end{minipage}%
+	}
+
+%%%%%%%%%%%%%%% TEST VARIATION - idea: two, three or four parallell vertical 
+				% vertical lists that inserts the skills in 
+				% such an order so as to minimize the total 
+				% length. NP-complete problem (?)
+\newbox\leftskillbox%
+\newbox\rightskillbox%
+\newenvironment{skills}[2]{%
+	\begin{minipage}{.49\linewidth}
+	\begin{tcolorbox}[colback=white,
+			  colframe=olofblue,
+			  boxrule=.5pt,
+			  bottomrule=-1pt,
+			  rightrule=-1pt,
+			  sharp corners] 
+	{\scshape #1} \\ #2 \\}
+	{
+	\end{tcolorbox}
+	\end{minipage}
+	}
 
 % COMMAND: Reading information variables from separate file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
-\readdef{./variables.dat}{\data}
+\readdef{./Latex/variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
 \newcounter{datacount}\setcounter{datacount}{0}%
@@ -233,9 +298,10 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 	
 		\vspace{2mm}
 		\begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
-		#5, & \texttt{Phone}:    \href{tel:#2}{#2}\\
-		#6, & \texttt{E-mail}:   \href{mailto:#3}{#3}\\
-		#7  & \texttt{Website}:  \href{#4}{#1}
+		\texttt{Adress}: & \texttt{Phone}:    \href{tel:#2}{#2}\\
+		#5,     	 & \texttt{E-mail}:   \href{mailto:#3}{#3}\\
+		#6,     	 & \texttt{Website}:  \href{#4}{#1}\\
+		#7      	 &
 		\end{tabular}
 		\vspace{1mm}
 	\end{minipage}%
@@ -249,17 +315,18 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 	\end{minipage}%
 	}
 	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}%
-		
+	
+	\hspace{.5mm}%	
 	\begin{minipage}{\linewidth - \mugshotwidth}	
 		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
 
+		\hspace{1mm}%
 		\usebox\contactbox
-		\begin{minipage}{.25\linewidth - \contactheight}
+		\begin{minipage}{.2\linewidth - \contactheight}
 			\hfill
 		\end{minipage}
 	
 		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
-		\vspace{1mm}%
 	\end{minipage}
 	\begin{minipage}[c]{\mugshotwidth}
 		\includegraphics[width=.97\linewidth, height=.97\contactheight]%
@@ -270,7 +337,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 % COMMAND: Main section
 \newcounter{sectioncounter}\setcounter{sectioncounter}{1}%
 \newcommand{\makesection}[2]{%
-	\pagebreak[2]\vspace{1mm}%
+	\vspace{1mm}%
 
 	\newsavebox{\textbox}%
 	\newsavebox{\titlebox}%
@@ -297,7 +364,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 		right=0mm,		% Space between text and right edge
 		left=0mm,		% Space between text and left edge
 		top=0mm]		% Space between text and top edge
-	\fontsize{11}{0}\raggedright\scshape #1
+	\fontsize{11}{0}\raggedright\textsc{#1}
 	\end{tcolorbox}
 	\end{minipage}%
 	}
