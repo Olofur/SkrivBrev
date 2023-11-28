@@ -37,7 +37,7 @@ function getseparatedvalue () {
 		variable=${line%$separator*}
 		value=${line#*$separator}
 		
-		if [ $variable = $3 ] ; then
+		if [ $variable == $3 ] ; then
 			# Spaces are translated to underscores for file 
 			# name compatibility
 			match=$(echo $value | sed -Er "s/ /_/")

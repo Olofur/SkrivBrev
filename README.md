@@ -1,9 +1,9 @@
 Repository for compiling .tex files using a bash terminal, with additional 
-functionals.
+functionality.
 
-To get going, run this shell with one of the template .tex files,
-	. LaTeXcompile.sh CV.tex
-	. LaTeXcompile.sh Cover.tex
+To get going run the main shell script,
+	. main.sh	
+and choose which .tex file to compile, followed by other options.
 
 All paths required to run the programs is given in the file 
 	config
@@ -14,12 +14,14 @@ in the Latex directory
 
 To be done:
 
-  Make LaTeXcompile.sh do all things on command:
+Implement wordweighing functionality to extract specific adjectives(?) from 
+larger texts  
+
+Make main.sh do all things on command:
     change variables,
     add, remove or edit words in wordcloud.dat,
     generate wordclouds,
-    simple fixes to figures,
-    compile all or only specific tex files from main Latex directory
+    compile all or only specific tex files from main Latex directddory
 
 	Improve the varChange.py file to improve management of variables
 
