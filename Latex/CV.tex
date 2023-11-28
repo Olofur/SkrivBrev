@@ -2,6 +2,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[10pt]{article}
 
+% For the timeline and lastpage functions to correctly generate it is 
+% sometimes required to compile twice
+
 % Lorem ipsum
 \usepackage{blindtext}
 \newcommand{\shortlorem}{Lorem ipsum dolor sit amet, consectetuer adipiscing 
@@ -43,7 +46,6 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 \usepackage{tikz}
 \usetikzlibrary{calc}
-\usetikzlibrary{shadings}
 
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
@@ -62,9 +64,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 % Tables
 \usepackage{tabularx}
-\usepackage{paralist}
 \usepackage{enumitem}
-
 \usepackage{tasks}
 
 % Page head, foot & numbering
@@ -195,7 +195,9 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 		     itemsep=2mm}	       % Item separation
 
 % If you at some point want to reset the timeline counter to stop drawing
-% lines between timeline items:
+% lines between timeline items, input these three lines. This is not done
+% by default to allow the timeline to span several sections.
+
 %\makeatletter
 %\g@addto@macro{\timeline}{\setcounter{tlcounter}{0}}
 %\makeatother
@@ -268,6 +270,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 % COMMAND: Reading information variables from separate file
 \newcommand\var[1]{\csname DATA#1\endcsname}
 \readarraysepchar{=}
+% Remove Latex pathlet
 \readdef{./Latex/variables.dat}{\data}
 \readarray\data\MyDat[-,2]
 
@@ -322,7 +325,7 @@ pede. Vivamus nunc nunc, molestie ut, ultricies vel, semper in, velit.}
 
 		\hspace{1mm}%
 		\usebox\contactbox
-		\begin{minipage}{.2\linewidth - \contactheight}
+		\begin{minipage}{.25\linewidth - \contactheight}
 			\hfill
 		\end{minipage}
 	

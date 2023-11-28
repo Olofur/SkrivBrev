@@ -17,24 +17,18 @@ outpath=Output/PDF
 # path for auxillary files
 auxpath=Output/AUX
 
-# alternative paths for output files
-### These should be moved to one list instead
-specpath1=Output/PDF
-specpath2=Output/PDF
-
-altoutpath={}
-
-# conditions for alternative output
-spec1=CV
-spec2=Cover
-
-altoutcond={}
+# alternative paths for output files and their name conditions
+altoutpath=(Output/PDF Output/PDF)
+altoutcond=(CV Cover)
 
 # paths for copy files 
 copypath=Output/COPY
 
 # contitions for copying output
 copycond=Cover
+
+# path to main latex directory
+latexpath=Latex
 
 # path to latex sections
 sectionpath=Latex/Sections

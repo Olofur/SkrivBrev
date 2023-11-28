@@ -24,7 +24,7 @@ import random
 # Transfer these to separate file
 FILE_PATH="./wordcloud.dat"
 SECTION_PATH="../Latex/Sections"
-SAVE_PATH="../Latex/wordcloud.png"
+SAVE_PATH="../Latex/Figures/wordcloud.png"
 FONT_PATH="./Fonts/arial.ttf"
 
 PATTERN="cvsection"
@@ -54,7 +54,7 @@ for x in os.listdir(SECTION_PATH):
 			      height=400, 
 			      prefer_horizontal=1.0,
 			      scale=1, 
-			      min_font_size=6, 
+			      min_font_size=8, 
 			      max_words=50, 
 			      background_color=None, 
 			      color_func=COLOR_FUNC, 
