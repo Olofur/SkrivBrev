@@ -26,9 +26,17 @@ import matplotlib.pyplot as plt
 import nltk
 #nltk.download("averaged_perceptron_tagger")
 
+def textclean(listofwords):
+	for x in listofwords:
+		for char in x:
+			if char in ")(/\\'"	
+				pass # remove char from x
+	print(listofwords)
+
+
 with open("wordtext.txt", encoding="utf-8") as f:
-	text = f.read().lower()    # CLEAN DATA
-	split_text = text.split()
+	text = f.read().lower()
+	split_text = textclean(text.split())
 	pos_tagged_text = nltk.pos_tag(split_text)  # JJ: adjective
 
 	words = [w for w in set(split_text)]
