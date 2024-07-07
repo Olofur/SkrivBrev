@@ -1,13 +1,9 @@
-###############################################################################
-##-##-##..........,....+...!..¤|''''''''''''''''|¤..!...+....,.........##-##-##
-##-##-##..........{_.~*^*~.&*^%| application.sh |%^*&.~*^*~._}.........##-##-##
-##-##-##..........~'^-....<'."?|,,,,,,,,,,,,,,,,|?".'>....-^'~.........##-##-##
-###############################################################################
-# Collection of bash functions used by main program.
-#
+#!/bin/bash
+
+# -*- coding: utf-8 -*-
 # author:oh
  
-#!/bin/bash
+'Application functions'
 
 # Usage:
 # $1 file path to search in
@@ -23,32 +19,32 @@ function getseparatedvalue () {
 	PARAM_ERR=101 # Incorrect number of parameters given
 	VAR_ERR=102   # The variable was not found in the file
 
-	if [ $# -lt $ARGCOUNT ] ; then
-		printf "Expected $ARGCOUNT arguments, got $#.\n"
+	if [ $# -lt "$ARGCOUNT" ] ; then
+		printf "Expected %s arguments, got $#.\n" "$ARGCOUNT"
 		return $PARAM_ERR
 	fi
-	if [ ! -f $1 ] ; then
+	if [ ! -f "$1" ] ; then
 		printf "The given file can not be found.\n"
 		return $FILE_ERR
 	fi
 	
 	separator=$2
 	while IFS= read -r line ; do
-		variable=${line%$separator*}
-		value=${line#*$separator}
+		variable=${line%"$separator"*}
+		value=${line#*"$separator"}
 		
-		if [ $variable == $3 ] ; then
+		if [ "$variable" == "$3" ] ; then
 			# Spaces are translated to underscores for file 
 			# name compatibility
-			match=$(echo $value | sed -Er "s/ /_/")
+			match=$(echo "$value" | sed -Er "s/ /_/")
 		fi
-	done < $1
+	done < "$1"
 	
-	if [ -z $match ] ; then
+	if [ -z "$match" ] ; then
 		printf "The given variable could not be found.\n"
 		return $VAR_ERR
 	else
-		echo $match
+		echo "$match"
 	fi 
 }
 
@@ -65,7 +61,7 @@ function getsections () {
 	PARAM_ERR=101 # Incorrect number of parameters given
 	
 	if [ $# -lt $ARGCOUNT ] ; then
-		printf "Expected $ARGCOUNT arguments, got $#.\n"
+		printf "Expected %s arguments, got $#.\n" "$ARGCOUNT"
 		return $PARAM_ERR
 	fi
 	if [ ! -d $1 ] ; then
@@ -73,7 +69,14 @@ function getsections () {
 		return $FILE_ERR
 	fi
 	
-	return $(ls -1 $1 | grep -E "$2" | wc -l)
+	count=0
+	for file in "$1"/*"$2"* ; do
+		if [ -f "$file" ] ; then
+			((count++))	
+		fi
+	done
+	
+	return $count
 }
 
 # Usage:
@@ -88,7 +91,7 @@ function splitfullpath () {
 	f=$1
 
 	# Extract file path as text before rightmost /
-	if [[ $f == ${f%/*} ]] ; then
+	if [[ $f == "${f%/*}" ]] ; then
 		fpath=""
 	else
 		fpath=${f%/*}		
@@ -101,10 +104,13 @@ function splitfullpath () {
 	# Extract file suffix as text after rightmost .
 	if [[ ${f##*.} == *'/'* ]] ; then
 		fsuffix=""
-	elif [ ${f##*.} == ${f##*/.} ] ; then
+	elif [ "${f##*.}" == "${f##*/.}" ] ; then
 		fsuffix=""
-	else 
+	else
 		fsuffix=${f##*.}
 	fi
+
+	export fpath
+	export fsuffix
 	}
 

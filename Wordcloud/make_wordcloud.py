@@ -1,13 +1,7 @@
-###############################################################################
-##-##-##.........,....+...!..¤|''''''''''''''''''|¤..!...+....,........##-##-##
-##-##-##.........{_.~*^*~.&*^%| makeWordCloud.py |%^*&.~*^*~._}........##-##-##
-##-##-##.........~'^-....<'."?|,,,,,,,,,,,,,,,,,,|?".'>....-^'~........##-##-##
-###############################################################################
-# The program reads a .dat file containing words and corresponding positive 
-# weights. It then constructs a .pdf containing a wordcloud of the weighted
-# words with given fonts and font colors.
-#
+# -*- coding: utf-8 -*-
 # author:oh
+
+'Make wordcloud'
 
 #!/usr/bin/python
 

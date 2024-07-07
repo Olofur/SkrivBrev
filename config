@@ -1,11 +1,7 @@
-###############################################################################
-##-##-##..............,....+...!..¤|''''''''|¤..!...+....,.............##-##-##
-##-##-##..............{_.~*^*~.&*^%| config |%^*&.~*^*~._}.............##-##-##
-##-##-##..............~'^-....<'."?|,,,,,,,,|?".'>....-^'~.............##-##-##
-###############################################################################
-# config file with all path names and variables relevant for the directory
-#
+# -*- coding: utf-8 -*-
 # author:oh
+
+'config file with all path names and variables relevant for the directory'
 
 # filepath for main .pdf output. outpath variables contain outpaths for 
 # all different cases specified in the LaTeXcompile.sh file and 
