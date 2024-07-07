@@ -3,12 +3,16 @@
 # -*- coding: utf-8 -*-
 # author:oh
 
-'Dialogue program for compiling latex files'
+# Dialogue program for compiling latex files
 
-import application.sh
+source ./application.sh
 
 # Read config variables
-import ./config
+source ./config
+
+${latexpath:?}
+${auxpath:?}
+${fname:?}
 
 wholelatexpath="$latexpath/*"
 
@@ -24,11 +28,11 @@ echo "Select which files to process by entering their space separated integers."
 
 file=()
 select _ in "${options[@]}" ; do
-	for reply in $REPLY ; do
+	for reply in "${REPLY[@]}" ; do
 		# First test if reply is contained in options
 		file+=("${options[reply - 1]}")		
 	done
-	[[ $options ]] && break
+	"${file[@]}" && break
 done
 
 if [ "$fname" == "CV" ] ; then

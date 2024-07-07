@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # author:oh
  
-'Application functions'
+# Application functions
 
 # Usage:
 # $1 file path to search in

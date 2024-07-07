@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # author:oh
 
-'config file with all path names and variables relevant for the directory'
+# config file with all path names and variables relevant for the directory
 
 # filepath for main .pdf output. outpath variables contain outpaths for 
 # all different cases specified in the LaTeXcompile.sh file and 
@@ -31,4 +31,3 @@ sectionpath=Latex/Sections
 
 # variable file name
 variablepath=Latex/variables.dat
-

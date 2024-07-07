@@ -3,17 +3,27 @@
 # -*- coding: utf-8 -*-
 # author:oh
 
-'Main latex compiling program'
+# Main latex compiling program
 
 # Import bash functions
-import application.sh 
+# shellcheck source=application.sh
+source ./application.sh 
 
 # Read config variables
-import ./config
+# shellcheck source=config
+source ./config
 
 # Run terminal dialogue program
-import ./dialogue.sh
+# shellcheck source=dialogue.sh
+source ./dialogue.sh
 
+${file:?}
+${fname:?}
+${altoutcond:?}
+${altoutpath:?}
+${auxpath:?}
+${variablepath:?}
+${copypath:?}
 
 # For all files in $file[@]
 for f in "${file[@]}" ; do
