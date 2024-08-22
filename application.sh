@@ -90,14 +90,14 @@ function splitfullpath () {
 
 	f=$1
 
-	# Extract file path as text before rightmost /
+	# Extract file path as text before rightmost "/"
 	if [[ $f == "${f%/*}" ]] ; then
 		fpath=""
 	else
 		fpath=${f%/*}		
 	fi
 
-	# Extract file name as text after rightmost / and after the suffix
+	# Extract file name as text after rightmost "/" and before the suffix
 	fname=${f##*/}		
 	fname=${fname%.*}	
 	
@@ -111,6 +111,7 @@ function splitfullpath () {
 	fi
 
 	export fpath
+	export fname	
 	export fsuffix
 	}
 

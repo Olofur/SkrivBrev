@@ -1,5 +1,9 @@
+#!/bin/bash
+
 # -*- coding: utf-8 -*-
 # author:oh
+
+set -a
 
 # config file with all path names and variables relevant for the directory
 
@@ -8,26 +12,25 @@
 # corresponding to the different spec variables
 
 # path for regular output
-outpath=Output/PDF
+outpath=output/pdf
 
 # path for auxillary files
-auxpath=Output/AUX
+auxpath=output/aux
 
 # alternative paths for output files and their name conditions
-altoutpath=(Output/PDF Output/PDF)
-altoutcond=(CV Cover)
+altoutsnip=(CV Cover)
+altoutsnippath=(output/pdf output/pdf)
 
 # paths for copy files 
-copypath=Output/COPY
+copypath=output/copy
 
 # contitions for copying output
 copycond=Cover
 
 # path to main latex directory
-latexpath=Latex
-
-# path to latex sections
-sectionpath=Latex/Sections
+latexpath=latex
 
 # variable file name
-variablepath=Latex/variables.dat
+variablepath=latex/variables.dat
+
+set +a
