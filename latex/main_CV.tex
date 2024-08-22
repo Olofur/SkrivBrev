@@ -1,0 +1,429 @@
+%                                                                   author:oh %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[10pt]{article}
+
+% Languages
+\usepackage[swedish,english,german]{babel}
+
+% Paper format 
+\usepackage[paper=a4paper,         % A4 format
+	        hoffset=0mm,	       % Offset from left edge 
+	        marginparwidth=10mm,   % Width of margin
+            marginparsep=0mm,      % Space between margin and main body
+            margin=10mm,           % Margins
+            includemp]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Lorem ipsum
+\usepackage{blindtext}
+\usepackage{lipsum}
+
+% Fonts
+\usepackage{bookman}
+
+% Figures
+\usepackage{graphicx}
+\graphicspath{ {./figures} }
+
+% Colors
+\usepackage{color}
+\usepackage{xcolor}
+
+\definecolor{olofblue}{rgb}{0.486,0.647,0.8}
+\definecolor{olofwhite}{rgb}{1.0,1,0.95}
+\definecolor{olofgray}{rgb}{0.3,0.3,0.3}
+
+% Date format
+\usepackage{datetime}
+\renewcommand{\dateseparator}{--}
+
+% Arithmetic
+\usepackage{calc}
+\usepackage{pifont}
+\usepackage{marvosym}
+
+% Read data
+\usepackage{readarray}
+
+% Tables
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{tasks}
+
+% Graphics
+\usepackage{worldflags}
+\usepackage{etoolbox}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% Page head, foot & numbering
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+% Hyperlinks
+\usepackage[unicode]{hyperref}
+\hypersetup{colorlinks,           %
+	    breaklinks,           %
+	    linkcolor=black,      % Like above \pageref{LastPage}
+	    urlcolor=olofblue}    % Like \href{}{} in the contact section
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom symbol commands
+\newrobustcmd*{\square}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) 
+	rectangle (2mm,2mm);}}
+
+\newrobustcmd*{\filledsquare}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) 
+	rectangle (2mm,2mm);}}
+
+\renewrobustcmd*{\circle}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) 
+	circle (1mm);}}
+
+\newrobustcmd*{\filledcircle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) 
+	circle (1mm);}}
+
+\renewrobustcmd*{\triangle}[1]{\tikz{\filldraw[draw=#1,fill=white] (0,0) -- 
+	(1mm,2mm) -- (2mm,0) -- cycle;}}
+
+\newrobustcmd*{\filledtriangle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) -- 
+	(1mm,2mm) -- (2mm,0) -- cycle;}}
+
+\newrobustcmd*{\lline}[1]{\tikz{\draw[draw=#1,thick] (0,0) -- (2mm,0) 
+	node[anchor=west];}}
+
+\newrobustcmd*{\angletriangle}[1]{\tikz{%
+				  \filldraw[draw=#1,  %
+					    fill=#1,  %
+					    olofblue] %
+				  (0,0) -- (0,2mm) -- (2mm,2mm) -- cycle;}}
+
+\newcommand{\subtitle}[1]{{\fontsize{13}{10}\fontfamily{qbk}\selectfont #1}}
+
+% COMMAND: Grading skills on a scale using custom symbols
+\newcommand{\grade}[3]{%
+	% When this counter is even the symbols are flipped, 
+	% which produces a nice effect when using the triangle
+	\newcounter{oddcounter}\setcounter{oddcounter}{0}%
+	\newcounter{x}\setcounter{x}{0}%	
+	\newcounter{y}\setcounter{y}{#1}%
+	\whiledo{\value{x} < #1}{%
+		\stepcounter{x}
+		\stepcounter{oddcounter}
+		\ifodd\theoddcounter
+			\csname filled#3\endcsname{olofblue}
+		\else
+			\rotatebox[origin=c]{0}{%
+				\csname filled#3\endcsname{olofblue}}
+		\fi
+		\!\!\!\!}% Reduce spacing slightly
+	\whiledo{\value{y} < #2}{%
+		\stepcounter{y}
+		\stepcounter{oddcounter}
+		\ifodd\theoddcounter
+			\csname #3\endcsname{olofblue}
+		\else
+			\rotatebox[origin=c]{0}{%
+				\csname #3\endcsname{olofblue}}
+		\fi
+		\!\!\!\!}% 
+	}
+
+% COMMAND: Get y coordinate from tikz object
+\makeatletter
+\newcommand{\gety}[2]{%
+  \tikz@scan@one@point\pgfutil@firstofone#1\relax
+  \edef#2{\the\pgf@y}%
+}
+\makeatother
+
+% COMMAND: Timeline list
+\newcounter{tlcounter}\setcounter{tlcounter}{0}%
+\DeclareRobustCommand{\dottedlinked}[1][]{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\ifnum1>\value{tlcounter}
+			\node[draw, 				 % Draw lines
+			      fill, 				 % Fill figure
+			      kite, 				 % Kite shape
+			      kite upper vertex angle=30, 	 % Kite angle
+			      anchor=south east, 		 % Anchor point
+			      inner sep=-.1mm,			 % Inner width
+			      outer sep=0mm,                     % Outer width
+                              olofblue]				 % Color
+		     	     at (0,.6mm)                         % Offset
+			     (tlcounter\number\value{tlcounter}) % Node name
+		     	     {\phantom{\textbullet}};            % Text in node
+		\fi
+		\ifnum0<\value{tlcounter}
+			\node[draw,				 % 
+			      fill,				 %
+                              circle, 				 %
+			      anchor=south east, 		 %
+                              inner sep=-.1mm, 			 %
+			      outer sep=0mm, 			 %
+                              olofblue] 			 %
+		     	     at (0,.6mm)			 %
+			     (tlcounter\number\value{tlcounter}) %
+		     	     {\phantom{\textbullet}};		 %
+			\draw[olofblue, dotted, line width=.5mm] 
+			(tlcounter\number\value{tlcounter}.north) -- 
+			(tlcounter\the\numexpr\value{tlcounter}-1);
+		\fi
+		\def\tmp{#1}%
+		\def\arg{!}%
+		\if\tmp\arg
+			\gety{%
+			(tlcounter\the\numexpr\value{tlcounter}-1)}{\py}
+			\draw[olofblue, line width=.5mm]
+			(-3mm, \py/2 - 1mm) -- (2mm, \py/2)
+			(-3mm, \py/2) -- (2mm, \py/2 + 1mm);
+		\fi
+		\stepcounter{tlcounter}
+	\end{tikzpicture}%
+	}
+
+% Introduce standard timeline list
+\newlist{timeline}{itemize}{1}%
+\setlist[timeline]{label=\dottedlinked,        % Make line links between items
+		     labelsep=-\linewidth,     % Put bullets on right of page
+		     leftmargin=0mm,	       % No indent on the left
+		     rightmargin=5mm,	       % Indent from the right 
+		     itemsep=2mm}	       % Item separation
+%
+% Introduce discontinuous timeline list to highlight jumps in timestamps
+\newlist{breakingtimeline}{itemize}{1}%
+\setlist[breakingtimeline]{%
+		     label=\dottedlinked[!],   % Make line links between items
+		     labelsep=-\linewidth,     % Put bullets on right of page
+		     leftmargin=0mm,	       % No indent on the left
+		     rightmargin=5mm,	       % Indent from the right 
+		     itemsep=2mm}	       % Item separation
+
+% If you at some point want to reset the timeline counter to stop drawing
+% lines between timeline items:
+
+%\makeatletter
+%\g@addto@macro{\timeline}{\setcounter{tlcounter}{0}}
+%\makeatother
+
+% ENVIRONMENT: Listing skills
+\newenvironment{skillslist}[1]{%
+	\vspace{-1.5mm}
+	\begin{tasks}[label=\none,
+		      %label=\angletriangle{olofblue},
+		      label-align=left,
+		      label-offset=-4mm,
+		      after-skip=0mm,
+		      after-item-skip=-2mm,
+		      item-indent=2mm,
+		      column-sep=2mm]%
+		      (#1)%
+	}
+	{\end{tasks}%
+	}
+
+% COMMAND: Skillbox
+\newcommand{\skill}[3]{%
+	\vspace{-5mm}%
+	\begin{tcolorbox}[colback=white,
+			  colframe=olofblue,
+			  boxrule=.25pt,
+			  toprule=-.5pt,
+			  bottomrule=-.5pt,
+			  leftrule=-.5pt,
+			  %rightrule=-.5pt,
+			  right=0mm,
+			  left=2mm,
+			  top=0mm,
+			  sharp corners]%
+	{\fontsize{11}{0}\textsc{#1}} \hfill #2 \\ {\small #3}
+	\end{tcolorbox}%
+	}
+
+% COMMAND: Mini skillbox
+\newsavebox\minibox
+\newcommand{\miniskill}[3]{%
+	\vspace{-5mm}%
+	\begin{tcolorbox}[colback=white,
+			  colframe=olofblue,
+			  boxrule=.25pt,
+			  toprule=0pt,
+			  bottomrule=0pt,
+			  leftrule=0pt,
+			  right=2mm,
+			  left=0mm,
+			  top=0mm,
+			  standard jigsaw,
+			  opacity=0,
+			  sharp corners]
+	{\sc #1} \hfill #2 
+	\ifx&#3&
+		%
+	\else
+		\\ {\small #3}
+	\fi
+	\end{tcolorbox}
+	}
+
+% COMMAND: Reading information variables from separate file
+\newcommand\var[1]{\csname DATA#1\endcsname}
+\readarraysepchar{=}
+\readdef{./variables.dat}{\data}
+\readarray\data\MyDat[-,2]
+
+\newcounter{datacount}\setcounter{datacount}{0}%
+\whiledo{\value{datacount} < \MyDatROWS}{%
+	\stepcounter{datacount}
+	\expandafter\xdef\csname DATA\MyDat[\arabic{datacount},1]\endcsname{%
+		\MyDat[\arabic{datacount},2]}%
+	}
+
+% COMMAND: Head section
+\newcommand{\makeheading}[1]{%
+	\hspace{10mm - \marginparsep - \marginparwidth - \hoffset}
+	\begin{minipage}[t]{\textwidth}
+		{\fontsize{26}{10}\fontfamily{qbk}\selectfont #1}
+	\end{minipage}%
+	}
+
+% COMMAND: Contact section
+\newbox\contactbox%
+\newbox\mugshotbox%
+\newcommand{\makecontact}[9]{%
+	\sbox\contactbox{%
+	\hspace{-2mm}
+	\begin{minipage}[c]{.75\linewidth}
+		\vspace{2mm}
+		\fontsize{12}{0}\raggedright\textsc{Kontaktuppgifter}
+		\newlength{\rcollength}\setlength{\rcollength}{70mm}%
+	
+		\vspace{1mm}
+		\begin{tabular}[t]{@{}p{\textwidth-\rcollength}p{\rcollength}}
+		\texttt{Adress}: & \texttt{Telefon}:    \href{tel:#2}{#2}\\
+		#5, 		 & \texttt{Mail}:   \href{mailto:#3}{#3}\\
+		#6, 		 & \texttt{Linkedin}: \href{#4}{#1}\\
+		#7  		 & \texttt{Github}:   \href{#8}{#9}
+		\end{tabular}
+		\vspace{1mm}
+	\end{minipage}%
+	}
+	\newlength{\contactheight}\setlength{\contactheight}{2\ht\contactbox}%
+	
+	\sbox\mugshotbox{%
+	\begin{minipage}[c]{\contactheight}
+		\includegraphics[width=\linewidth, height=\contactheight]%
+				{mugshot.jpeg}
+	\end{minipage}%
+	}
+	\newlength{\mugshotwidth}\setlength{\mugshotwidth}{\wd\mugshotbox}%
+	
+	\hspace{.5mm}%
+	\begin{minipage}{\linewidth - \mugshotwidth}	
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
+		
+		\hspace{1mm}%
+		\usebox\contactbox
+		\begin{minipage}{.25\linewidth - \contactheight}
+			\hfill
+		\end{minipage}
+	
+		{\color{olofblue}\rule{\linewidth + 3pt}{.3pt}}%
+	\end{minipage}
+	\vspace{2mm}
+	\begin{minipage}[c]{\mugshotwidth}
+		\includegraphics[width=.975\linewidth,% 
+				 height=.975\contactheight]%
+				{mugshot.jpeg}
+	\end{minipage}%
+	}
+
+% COMMAND: Main section
+\newcounter{seccount}\setcounter{seccount}{1}%
+\newsavebox\textbox%
+\newsavebox\titlebox%
+\newcommand{\makesection}[2]{%
+	\sbox\textbox{%	
+	\begin{minipage}{.85\linewidth}	
+		\input{./sections/cvsection\theseccount.tex}
+	\end{minipage}%
+	}
+
+	\newlength{\secheight}\setlength{\secheight}{2\ht\textbox}%
+
+	\sbox\titlebox{%
+	\begin{minipage}{.14\linewidth}
+	\begin{tcolorbox}[enhanced,	% Enable watermarks 
+		colback=olofblue,	% Background color
+		colframe=white,		% Frame color
+		colupper=olofwhite,	% Text color
+		sharp corners,		% Sharp box corners
+		watermark graphics=wordcloud\theseccount.png,%
+		watermark overzoom=1.0,	% Watermark zoom
+		watermark opacity=0.15, % Watermark opacity
+		width=\linewidth,	% Width of colorbox
+		height=\secheight,	% Height of colorbox
+		right=0mm,		% Space between text and right edge
+		left=-.5mm,		% Space between text and left edge
+		top=0mm]		% Space between text and top edge
+	\fontsize{11}{0}\raggedright\textsc{#1}
+	\end{tcolorbox}
+	\end{minipage}%
+	}
+
+	\usebox\titlebox
+	\hspace{.5mm}	
+	\usebox\textbox
+	
+	\addtocounter{seccount}{1}%
+	}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Semi-Permanent
+\def\myname{\var{myname}}
+\def\phone{\var{phone}}
+\def\email{\var{email}}
+\def\linkedin{\var{linkedin}}
+\def\github{\var{github}}
+\def\githubname{\var{githubname}}
+\def\myadress{\var{myadress}}
+\def\mycity{\var{mycity}}
+\def\mycountry{\var{mycountry}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%% ======================================= HEAD
+\makeheading{\myname}
+
+%% ======================================= CONTACT
+\makecontact{\myname}{\phone}{\email}{\linkedin}{\myadress}{\mycity}%
+	    {\mycountry}{\github}{\githubname}
+
+%% ======================================= ABOUT ME
+\makesection{Om mig}
+
+%% ======================================= EXPERIENCE
+\makesection{Arbetslivs-\\erfarenhet}
+
+%% ======================================= EDUCATION
+\makesection{Utbildning}
+
+%% ======================================= SOFTWARE SKILLS
+\makesection{Tekniska\\Färdigheter}
+
+%% ======================================= LANGUAGES
+\makesection{Språk-\\kunskaper}
+
+%% ======================================= OTHER
+%\makesection{Annat}
+
+\end{document}
+ 
