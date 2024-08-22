@@ -3,65 +3,73 @@
 # -*- coding: utf-8 -*-
 # author:oh
 
-# Main latex compiling program
+# Compiles .tex file into .pdf format interactively
 
-# Import bash functions
-# shellcheck source=application.sh
-source ./application.sh 
+# To run program, type
+#
+# >>> ./main.sh
+#
+# into terminal
+
+BASEDIR=$0
+BASEPATH=${BASEDIR%/*}
 
 # Read config variables
-# shellcheck source=config
-source ./config
+source "$BASEPATH/config"
+
+# Import bash functions
+source "$BASEPATH/application.sh" 
 
 # Run terminal dialogue program
-# shellcheck source=dialogue.sh
-source ./dialogue.sh
+. "$BASEPATH/dialogue.sh"
 
-${file:?}
-${fname:?}
-${altoutcond:?}
-${altoutpath:?}
-${auxpath:?}
-${variablepath:?}
-${copypath:?}
-
-# For all files in $file[@]
+# For all files in $file[@] (later implemented as an array)
 for f in "${file[@]}" ; do
 	splitfullpath "$f"	# Sets values for $fpath, $fname, $fsuffix 
 
-	for i in "${!altoutcond[@]}"; do
-		if [ "$fname" == "${altoutcond[$i]}" ] ; then
-			outpath=${altoutpath[$i]}	
-		fi
+	for i in "${!altoutsnip[@]}"; do
+		# All filenames are split by '_' and stored as elements in the 
+		# SNIPPETS array
+		IFS="_" ; read -a SNIPPETS <<< "$fname" ; IFS=" "	
+		for j in "${SNIPPETS[@]}"; do
+			if [ "$j" == "${altoutsnip[i]}" ] ; then
+				outpath=${altoutsnippath[$i]}	
+				break
+			fi
+		done
 	done
 
 	if [ "$CONTINUOUS" == 1 ] ; then
-		latexmk -f -pvc -pvctimeout -new-viewer -view=pdf -pdf -silent -outdir="$outpath" "$f"
+		latexmk -f -cd -pvc -pvctimeout -new-viewer -view=pdf -pdf -silent -outdir="../$outpath" "$f"
 	else
-		latexmk -f -pv -new-viewer -view=pdf -pdf -silent -outdir="$outpath" "$f"
+		latexmk -f -cd -pv -new-viewer -view=pdf -pdf -silent -outdir="../$outpath" "$f"
 	fi
 
-	wholeoutpath="$outpath/*"
-	for item in $wholeoutpath ; do
-		if [[ $item != *'.pdf' && $item == *$fname* ]] ; then
-			if [ "$CLEAN" == 1 ] ; then
-				rm "$item"
-			else
-				mv -t "$auxpath" "$item" 
-			fi
-		fi	
+	for item in "$outpath"/* ; do
+		if [[ $item == *".pdf" || $item != *"$fname"* || -d $item ]] ; 
+		then
+			continue
+		fi
+
+		if [ "$CLEAN" == 1 ] ; then
+			rm "$item"
+		else
+			mv -t "$auxpath" "$item" 
+		fi
 	done
-
-	# If no copy name is given pick out two variables from varconfig.dat 
-	# to name the copy
-	if [ -z "$copyname" ] ; then
-		urname=$(getseparatedvalue "$variablepath" "=" "urname")
-		ursurname=$(getseparatedvalue "$variablepath" "=" "ursurname")
 	
-		copyname=$urname'_'$ursurname'_copy'
+	if [ "$COPY" == 1 ] ; then
+		echo "Done! Enter name of copy:"
+		read -r copyname
+
+		if [ -z "$copyname" ] ; then
+			urcompany=$(getseparatedvalue "$variablepath" "=" "urcompany")
+			position=$(getseparatedvalue "$variablepath" "=" "position")
+	
+			copyname=$urcompany'_'$position
+		fi
+
+		cp "$outpath/$fname.pdf" "$copypath/$fname.pdf"
+		mv "$copypath/$fname.pdf" "$copypath/$copyname.pdf"	
 	fi
-
-	cp "$outpath/$fname.pdf" "$copypath/$fname.pdf"
-	mv "$copypath/$fname.pdf" "$copypath/$copyname.pdf"	
-	
 done

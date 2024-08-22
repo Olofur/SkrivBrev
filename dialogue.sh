@@ -10,38 +10,38 @@ source ./application.sh
 # Read config variables
 source ./config
 
-${latexpath:?}
-${auxpath:?}
-${fname:?}
-
 wholelatexpath="$latexpath/*"
 
 options=()
 for f in $wholelatexpath ; do
 	suffix=${f##*.}
 	if [ "$suffix" == "tex" ] ; then
-		options+=("${f}")
+		options+=("${f##*/}")
 	fi
 done
 
-echo "Select which files to process by entering their space separated integers."
+echo "Select file to process by entering their space separated integers."
 
 file=()
 select _ in "${options[@]}" ; do
 	for reply in "${REPLY[@]}" ; do
-		# First test if reply is contained in options
+		# Test if reply is contained in options
 		file+=("${options[reply - 1]}")		
 	done
-	"${file[@]}" && break
+	[[ "${options}" ]] && break
 done
+echo "$file"
+file="$latexpath/$file"
 
-if [ "$fname" == "CV" ] ; then
+splitfullpath "$file"	# Sets values for $fpath, $fname, $fsuffix 
+
+if [[ "$fname" == *"_CV" ]] ; then
 	# Modify variables (y/n) ?
 	while :; do
 		echo "Modify variables? (y/n)"
 		read -r answer
 		case $answer in
-			y|Y) python3 varChange.py ; break ;;
+			y|Y) python3 "../python/other/var_change.py" ; break ;;
 			n|N) break ;;
 			*) echo "Please choose a valid answer." ;;
 		esac
@@ -52,18 +52,30 @@ if [ "$fname" == "CV" ] ; then
 		echo "Remake wordclouds? (y/n)"
 		read -r answer
 		case $answer in
-			y|Y) WordCloud/makeWordCloud.py ; break ;;
+			y|Y) python3 "../python/other/make_word_cloud.py"
+			     break ;;
 			n|N) break ;;
 			*) echo "Please choose a valid answer." ;;
 		esac
 	done
-elif [ "$fname" == "Cover" ] ; then
-	# Reweigh textwords (y/n) ?
+elif [[ "$fname" == *"_Cover" ]] ; then
+	# Modify variables (y/n) ?
 	while :; do
-		echo "Reweigh words from text? (y/n)"
+		echo "Modify variables? (y/n)"
 		read -r answer
 		case $answer in
-			y|Y) python3 wordweight.py ; break ;;
+			y|Y) python3 "../python/other/var_change.py" ; break ;;
+			n|N) break ;;
+			*) echo "Please choose a valid answer." ;;
+		esac
+	done
+	
+	# Reweigh textwords (y/n) ?
+	while :; do
+		echo "Reweight words from text? (y/n)"
+		read -r answer
+		case $answer in
+			y|Y) python3 "../python/other/word_weight.py" ; break ;;
 			n|N) break ;;
 			*) echo "Please choose a valid answer." ;;
 		esac
@@ -95,18 +107,19 @@ while :; do
 done
 
 # Save copy (y/n) ?
-while :; do
-	echo "Save copy? (y/n)"
-	read -r answer
-	case $answer in
-		y|Y) COPY=1 ; 
-		     echo "Enter copy name:"
-		     # read -r copyname
-		     break ;;
-		n|N) COPY=0 ; break ;;
-		*) echo "Please choose a valid answer." ;;
-	esac
-done
+if [[ "$fname" == *"_Cover" ]] ; then
+	COPY=1
+else
+	while :; do
+		echo "Save copy? (y/n)"
+		read -r answer
+		case $answer in
+			y|Y) COPY=1 ; break ;;
+			n|N) COPY=0 ; break ;;
+			*) echo "Please choose a valid answer." ;;
+		esac
+	done
+fi
 
 export file
 export CONTINUOUS
